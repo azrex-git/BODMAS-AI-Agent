@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BODMAS // GEMMA 4 TUTOR AGENT</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="hud-container">
+    <!-- Header -->
+    <header class="hud-header">
+      <div class="logo-area">
+        <h1 class="pixel-logo">BODMAS</h1>
+        <span class="sub-logo">// GEMMA 4 MoE HARNESS</span>
+      </div>
+      <div class="header-actions">
+        <span class="version-tag">v1.0.0</span>
+        <button id="btn-eval" class="hud-btn-outline" title="Run 1-Click Evaluation Suite">▮ RUN BENCHMARK</button>
+        <button id="btn-settings" class="hud-btn-outline" title="Settings & API Key">SETTINGS</button>
+      </div>
+    </header>
+
+    <!-- Main Grid -->
+    <main class="hud-grid">
+      <!-- Left Column: Controls & Input -->
+      <section class="hud-col left-col">
+        <!-- Input Box -->
+        <div class="hud-card">
+          <div class="card-title">
+            <span class="indicator">▮</span> INPUT EQUATION
+          </div>
+          <div class="card-body">
+            <textarea id="equation-input" placeholder="Type or paste arithmetic expression here... (e.g. 3 + 5 * (2 - 8))" rows="5"></textarea>
+            
+            <div class="preset-label">QUICK BENCHMARK PRESETS:</div>
+            <div class="preset-chips">
+              <button class="chip" data-eq="3 + 5 * (2 - 8)">3 + 5 * (2 - 8)</button>
+              <button class="chip" data-eq="4 + 2 * (3 + (5 - 2) * 2)">4 + 2 * (3 + (5-2)*2)</button>
+              <button class="chip" data-eq="12 / 4 + 3 * (8 - 10)">12 / 4 + 3 * (8-10)</button>
+              <button class="chip" data-eq="2 ^ 3 + 18 / (9 - 3)">2^3 + 18 / (9-3)</button>
+              <button class="chip" data-eq="24 / 4 * 2 - 3 + 1">24 / 4 * 2 - 3 + 1</button>
+              <button class="chip chip-warn" data-eq="8 + * 3 - (4 / )">8 + * 3 - (4 / ) [Guardrail]</button>
+            </div>
+            
+            <div class="input-meta">
+              <span id="char-count">0 Chars</span>
+              <span id="status-pill">READY</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Setup & Controls Box -->
+        <div class="hud-card">
+          <div class="card-title">
+            <span class="indicator">▮</span> REVIEW FOCUS &amp; SETUP
+          </div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="form-group">
+                <label>ACTIVE MODEL</label>
+                <div class="model-badge-box">
+                  <div class="model-badge-header">
+                    <span class="model-badge-name">GEMMA 4 MoE (4B ACTIVE)</span>
+                    <span class="model-badge-tag">LIGHTWEIGHT</span>
+                  </div>
+                  <div class="model-badge-sub">26B Mixture-of-Experts Architecture // Hosted on Gemini API</div>
+                  <input type="hidden" id="model-select" value="gemma-4-26b-a4b-it">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label class="section-label">FOCUS AREAS</label>
+              <div class="focus-grid">
+                <label class="hud-checkbox"><input type="checkbox" id="chk-engine" checked> <span>CORRECTNESS (BODMAS)</span></label>
+                <label class="hud-checkbox"><input type="checkbox" id="chk-tutor" checked> <span>PEDAGOGICAL TIPS</span></label>
+                <label class="hud-checkbox"><input type="checkbox" id="chk-schema" checked> <span>STRICT JSON SCHEMA</span></label>
+                <label class="hud-checkbox"><input type="checkbox" id="chk-telemetry" checked> <span>TELEMETRY HUD</span></label>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="slider-header">
+                <label for="temp-slider">TUTOR CREATIVITY (STAGE 3 TEMP)</label>
+                <span id="temp-val" class="highlight-val">0.40</span>
+              </div>
+              <input type="range" id="temp-slider" min="0.0" max="1.0" step="0.05" value="0.40" class="hud-slider">
+              <div class="slider-labels">
+                <span>0.0 (Strict / Concise)</span>
+                <span>1.0 (Expressive Tutor)</span>
+              </div>
+            </div>
+
+            <button id="btn-solve" class="hud-btn-primary">
+              ▮▮ SOLVE WITH GEMMA 4 ▮▮
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Column: HUD Execution Screen -->
+      <section class="hud-col right-col">
+        <div class="hud-card full-height">
+          <!-- Top Telemetry Status Bar -->
+          <div class="hud-telemetry-bar">
+            <div class="telemetry-item" id="tel-latency">
+              <span class="tel-label">LATENCY:</span>
+              <span class="tel-value">-- ms</span>
+            </div>
+            <div class="telemetry-item" id="tel-tokens">
+              <span class="tel-label">TOKENS:</span>
+              <span class="tel-value">-- (In: -- | Out: --)</span>
+            </div>
+            <div class="telemetry-item" id="tel-schema">
+              <span class="tel-label">SCHEMA:</span>
+              <span class="tel-badge">IDLE</span>
+            </div>
+            <div class="telemetry-item" id="tel-model">
+              <span class="tel-label">MODEL:</span>
+              <span class="tel-value">gemma-4-26b-a4b-it</span>
+            </div>
+          </div>
+
+          <div class="card-body terminal-view" id="hud-display">
+            <!-- Idle Placeholder (Matching user's reference image) -->
+            <div class="empty-session" id="empty-state">
+              <div class="pixel-glyph">
+                <div></div><div></div><div></div>
+                <div></div><div></div><div></div>
+                <div></div><div></div><div></div>
+              </div>
+              <div class="empty-title">NO ACTIVE SESSION</div>
+              <div class="empty-sub">Enter an arithmetic equation and click Solve.</div>
+            </div>
+
+            <!-- Loading View -->
+            <div class="loading-state hidden" id="loading-state">
+              <div class="cursor-line">
+                <span class="prompt-arrow">&gt;</span> <span id="loading-status-text">INITIALIZING GEMMA 4 MoE MULTI-STAGE PIPELINE...</span> <span class="blink-cursor">▮</span>
+              </div>
+              <div class="loading-stages">
+                <div class="stage-step" id="stage-step-1">▰ Stage 1: Parser &amp; Syntax Guardrails (temp=0.0)</div>
+                <div class="stage-step" id="stage-step-2">▰ Stage 2: Step-by-Step BODMAS Reduction (temp=0.0)</div>
+                <div class="stage-step" id="stage-step-3">▰ Stage 3: Pedagogical Explainer (temp=custom)</div>
+              </div>
+            </div>
+
+            <!-- Execution Results View -->
+            <div class="results-state hidden" id="results-state">
+              <!-- Banner Answer -->
+              <div class="final-banner" id="final-banner">
+                <div class="banner-title">FINAL RESULT</div>
+                <div class="banner-value" id="final-answer-val">--</div>
+              </div>
+
+              <!-- Step-by-Step Reduction Section -->
+              <div class="hud-section" id="reduction-section">
+                <div class="section-heading">▮ STEP-BY-STEP ALGEBRAIC REDUCTION</div>
+                <div class="steps-flow" id="steps-flow-container"></div>
+              </div>
+
+              <!-- Tutor Pedagogical Commentary -->
+              <div class="hud-section" id="tutor-section">
+                <div class="section-heading">▮ PEDAGOGICAL TUTOR BREAKDOWN</div>
+                <div class="tutor-card">
+                  <h3 id="tutor-title" class="tutor-title"></h3>
+                  <p id="tutor-overview" class="tutor-overview"></p>
+                  <div id="tutor-steps-list" class="tutor-steps-list"></div>
+                  <div id="tutor-encouragement" class="tutor-encouragement"></div>
+                </div>
+              </div>
+
+              <!-- Collapsible JSON Inspector -->
+              <div class="hud-section">
+                <div class="section-heading toggle-heading" id="json-toggle">
+                  <span>▶ RAW STRUCTURED JSON PAYLOAD</span>
+                  <span class="toggle-indicator">[EXPAND]</span>
+                </div>
+                <pre class="json-code hidden" id="json-code-viewer"></pre>
+              </div>
+            </div>
+
+            <!-- Benchmark Evaluation Modal / View -->
+            <div class="eval-view hidden" id="eval-view">
+              <div class="eval-header">
+                <div class="eval-title">▮ GEMMA 4 BENCHMARK SUITE REPORT</div>
+                <button class="hud-btn-outline btn-close-eval" id="btn-close-eval">[ CLOSE ]</button>
+              </div>
+              <pre class="ascii-terminal-table" id="eval-table-output">RUNNING BENCHMARK TESTS...</pre>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Settings Modal -->
+    <div class="hud-modal hidden" id="settings-modal">
+      <div class="modal-backdrop"></div>
+      <div class="modal-box">
+        <div class="modal-header">
+          <div class="modal-title">▮ SYSTEM SETTINGS &amp; API KEY</div>
+          <button class="btn-close-modal" id="btn-close-settings">✕</button>
+        </div>
+        <div class="modal-body">
+          <p class="settings-desc">
+            The tutor connects to <strong>Gemma 4</strong> via the official <strong>Google Gemini API</strong> (<code class="code-inline">google-genai</code>).
+            Enter your Gemini API key below to call Gemma 4 live, or leave blank to run in offline local simulation mode.
+          </p>
+          <div class="form-group">
+            <label for="api-key-input">GEMINI API KEY</label>
+            <input type="password" id="api-key-input" class="hud-input" placeholder="AIzaSy...">
+          </div>
+          <div class="key-status-indicator" id="key-status-text">Checking API key status...</div>
+        </div>
+        <div class="modal-footer">
+          <button class="hud-btn-outline" id="btn-clear-key">CLEAR</button>
+          <button class="hud-btn-primary" id="btn-save-key">SAVE SETTINGS</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

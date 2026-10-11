@@ -1,0 +1,50 @@
+[
+  {
+    "id": "TC-01",
+    "name": "Nested Parentheses & Multi-level Precedence",
+    "equation": "4 + 2 * (3 + (5 - 2) * 2)",
+    "expected_answer": "22",
+    "expect_valid": true,
+    "description": "Tests innermost bracket resolution before outer addition/multiplication."
+  },
+  {
+    "id": "TC-02",
+    "name": "Precedence with Negative Result",
+    "equation": "12 / 4 + 3 * (8 - 10)",
+    "expected_answer": "-3",
+    "expect_valid": true,
+    "description": "Tests division precedence and negative integer multiplication."
+  },
+  {
+    "id": "TC-03",
+    "name": "Orders (Exponents) and Division",
+    "equation": "2 ^ 3 + 18 / (9 - 3)",
+    "expected_answer": "11",
+    "expect_valid": true,
+    "description": "Tests powers/exponents (Orders in BODMAS) combined with brackets."
+  },
+  {
+    "id": "TC-04",
+    "name": "Left-to-Right Equal Precedence",
+    "equation": "24 / 4 * 2 - 3 + 1",
+    "expected_answer": "10",
+    "expect_valid": true,
+    "description": "Verifies that Division & Multiplication resolve left-to-right rather than multiplying first."
+  },
+  {
+    "id": "TC-05",
+    "name": "Syntax Guardrail Rejection",
+    "equation": "8 + * 3 - (4 / )",
+    "expected_answer": "INVALID",
+    "expect_valid": false,
+    "description": "Circuit-breaker test: Must reject consecutive operators and dangling parentheses without running Stage 2 or 3."
+  },
+  {
+    "id": "TC-06",
+    "name": "Classic BODMAS Benchmark",
+    "equation": "3 + 5 * (2 - 8)",
+    "expected_answer": "-27",
+    "expect_valid": true,
+    "description": "Standard benchmark problem from the execution plan."
+  }
+]
